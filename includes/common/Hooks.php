@@ -125,7 +125,7 @@ class ScribuntoHooks {
 
 			if ( $wgScribuntoGatherFunctionStats ) {
 				$u0 = $engine->getResourceUsage( $engine::CPU_SECONDS );
-				$result = $module->invoke( $functionName, $childFrame );
+				$result = $module->invoke( $functionName, $childFrame, $args );
 				$u1 = $engine->getResourceUsage( $engine::CPU_SECONDS );
 
 				if ( $u1 > $u0 ) {
@@ -137,7 +137,7 @@ class ScribuntoHooks {
 					}
 				}
 			} else {
-				$result = $module->invoke( $functionName, $childFrame );
+				$result = $module->invoke( $functionName, $childFrame, $args );
 			}
 
 			return Validator::cleanUp( strval( $result ) );
