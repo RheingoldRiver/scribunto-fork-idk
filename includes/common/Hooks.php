@@ -100,7 +100,11 @@ class ScribuntoHooks {
 				throw new ScribuntoException( 'scribunto-common-nofunction' );
 			}
 			$moduleName = trim( $frame->expand( $args[0] ) );
-			$engine = Scribunto::getParserEngine( $parser );
+
+			$options = [];
+			Hooks::run( 'ScribuntoGetInvokeOptions', [&$options, $frame, $args] );
+
+			$engine = Scribunto::getParserEngine( $parser, $options );
 
 			$title = Title::makeTitleSafe( NS_MODULE, $moduleName );
 			if ( !$title || !$title->hasContentModel( CONTENT_MODEL_SCRIBUNTO ) ) {

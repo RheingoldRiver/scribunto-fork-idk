@@ -566,6 +566,8 @@ abstract class Scribunto_LuaEngine extends ScribuntoEngineBase {
 		}
 
 		$title = Title::newFromText( $name );
+		Hooks::run( 'ScribuntoLoadPackageModuleTitle', [&$title, $name, $this->options] );
+
 		if ( !$title || !$title->hasContentModel( CONTENT_MODEL_SCRIBUNTO ) ) {
 			return [];
 		}
