@@ -52,6 +52,8 @@ abstract class ScribuntoEngineBase {
 	 */
 	protected $parser;
 
+	protected $branch = null;
+
 	/**
 	 * Creates a new module object within this engine
 	 *
@@ -93,6 +95,9 @@ abstract class ScribuntoEngineBase {
 		}
 		if ( isset( $options['title'] ) ) {
 			$this->title = $options['title'];
+		}
+		if ( isset( $options['branch'] ) ) {
+			$this->branch = $options['branch'];
 		}
 	}
 

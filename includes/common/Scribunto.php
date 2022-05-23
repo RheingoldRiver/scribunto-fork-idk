@@ -51,9 +51,10 @@ class Scribunto {
 	 * @param Parser $parser
 	 * @return ScribuntoEngineBase
 	 */
-	public static function getParserEngine( Parser $parser ) {
+	public static function getParserEngine( Parser $parser, $extraOptions = [] ) {
 		if ( empty( $parser->scribunto_engine ) ) {
-			$parser->scribunto_engine = self::newDefaultEngine( [ 'parser' => $parser ] );
+			$extraOptions['parser'] = $parser;
+			$parser->scribunto_engine = self::newDefaultEngine( $extraOptions );
 			$parser->scribunto_engine->setTitle( $parser->getTitle() );
 		}
 		return $parser->scribunto_engine;

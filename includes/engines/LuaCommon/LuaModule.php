@@ -51,17 +51,7 @@ class Scribunto_LuaModule extends ScribuntoModuleBase {
 	 * @throws ScribuntoException
 	 * @return string|null
 	 */
-	public function invoke( $name, $frame, $args ) {
-
-		$branch = null;
-
-		foreach($args as $arg) {
-			$parts = explode('=', $arg, 2);
-			if (trim($parts[0]) == '_branch') {
-				$branch = trim($parts[1]);
-			}
-		}
-
+	public function invoke( $name, $frame ) {
 		$ret = $this->engine->executeModule( $this->getInitChunk(), $name, $frame );
 
 		if ( !isset( $ret ) ) {
@@ -75,7 +65,7 @@ class Scribunto_LuaModule extends ScribuntoModuleBase {
 			);
 		}
 
-		$result = $this->engine->executeFunctionChunk( $ret, $frame, $branch );
+		$result = $this->engine->executeFunctionChunk( $ret, $frame );
 		if ( isset( $result[0] ) ) {
 			return $result[0];
 		} else {

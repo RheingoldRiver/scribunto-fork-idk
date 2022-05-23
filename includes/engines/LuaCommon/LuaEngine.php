@@ -57,8 +57,6 @@ abstract class Scribunto_LuaEngine extends ScribuntoEngineBase {
 	 */
 	protected $availableLibraries = [];
 
-	protected $branch = null;
-
 	private const MAX_EXPAND_CACHE_SIZE = 100;
 
 	/**
@@ -291,11 +289,9 @@ abstract class Scribunto_LuaEngine extends ScribuntoEngineBase {
 	 * @param PPFrame|null $frame
 	 * @return array
 	 */
-	public function executeFunctionChunk( $chunk, $frame, $branch ) {
+	public function executeFunctionChunk( $chunk, $frame ) {
 		// $resetFrames is a ScopedCallback, so it has a purpose even though it appears unused.
 		$resetFrames = $this->setupCurrentFrames( $frame );
-
-		$this->branch = $branch;
 
 		return $this->getInterpreter()->callFunction(
 			$this->mw['executeFunction'],
@@ -560,17 +556,20 @@ abstract class Scribunto_LuaEngine extends ScribuntoEngineBase {
 		$luaName = str_replace( '.', '/', $name ) . '.lua';
 		$paths = $this->getLibraryPaths( 'lua', self::$libraryPaths );
 		foreach ( $paths as $path ) {
-			$branchPath = $this->branch === null ? '' : "/" . $this->branch;
-			$fileName = $this->normalizeModuleFileName( "$path/$luaName$branchPath" );
+			$fileName = $this->normalizeModuleFileName( "$path/$luaName" );
 			if ( !file_exists( $fileName ) ) {
 				continue;
 			}
+
 			$code = file_get_contents( $fileName );
 			$init = $this->interpreter->loadString( $code, "@$luaName" );
 			return [ $init ];
 		}
 
-		$title = Title::newFromText( $name );
+		$branchPath = $this->branch === null ? '' : "/" . $this->branch;
+		$branchedName = "$name$branchPath";
+		$branchedTitle = Title::newFromText( $branchedName );
+		$title = $branchedTitle->exists() ? $branchedTitle : Title::newFromText( $name );
 		if ( !$title || !$title->hasContentModel( CONTENT_MODEL_SCRIBUNTO ) ) {
 			return [];
 		}

@@ -100,7 +100,16 @@ class ScribuntoHooks {
 				throw new ScribuntoException( 'scribunto-common-nofunction' );
 			}
 			$moduleName = trim( $frame->expand( $args[0] ) );
-			$engine = Scribunto::getParserEngine( $parser );
+
+			$branch = null;
+			foreach($args as $arg) {
+				$parts = explode('=', $frame->expand($arg), 2);
+				if (trim($parts[0]) === '_branch') {
+					$branch = trim($parts[1]);
+				}
+			}
+
+			$engine = Scribunto::getParserEngine( $parser, [ 'branch' => $branch] );
 
 			$title = Title::makeTitleSafe( NS_MODULE, $moduleName );
 			if ( !$title || !$title->hasContentModel( CONTENT_MODEL_SCRIBUNTO ) ) {
@@ -125,7 +134,7 @@ class ScribuntoHooks {
 
 			if ( $wgScribuntoGatherFunctionStats ) {
 				$u0 = $engine->getResourceUsage( $engine::CPU_SECONDS );
-				$result = $module->invoke( $functionName, $childFrame, $args );
+				$result = $module->invoke( $functionName, $childFrame );
 				$u1 = $engine->getResourceUsage( $engine::CPU_SECONDS );
 
 				if ( $u1 > $u0 ) {
@@ -137,7 +146,7 @@ class ScribuntoHooks {
 					}
 				}
 			} else {
-				$result = $module->invoke( $functionName, $childFrame, $args );
+				$result = $module->invoke( $functionName, $childFrame );
 			}
 
 			return Validator::cleanUp( strval( $result ) );

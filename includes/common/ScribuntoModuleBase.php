@@ -88,5 +88,5 @@ abstract class ScribuntoModuleBase {
 	 * @param PPFrame $frame
 	 * @return string
 	 */
-	abstract public function invoke( $name, $frame, $args );
+	abstract public function invoke( $name, $frame );
 }
